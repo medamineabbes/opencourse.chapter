@@ -17,6 +17,9 @@ public class ChapterDto {
     private Long sectionId;
     private Boolean finished;
     private List<ElementDto> elements;
+    public ChapterDto(){
+        
+    }
     public static ChapterDto fromChapter(Chapter c){
         ChapterDto cd=new ChapterDto();
         cd.setDescription(c.getDescription());
@@ -32,4 +35,31 @@ public class ChapterDto {
         );
         return cd;
     }
+    public static Chapter fromDto(ChapterDto cd){
+        Chapter c=new Chapter();
+        c.setDescription(cd.getDescription());
+        c.setId(cd.getId());
+        c.setSectionId(cd.getSectionId());
+        c.setTitle(cd.getTitle());
+        c.setVideoUrl(cd.getVideoUrl());
+        c.setElements(
+            cd.getElements().stream()
+            .map((e)->ElementDto.fromDto(e))
+            .collect(Collectors.toList())
+        );
+        return c;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
