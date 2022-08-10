@@ -7,8 +7,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import lombok.Data;
 
 @Data
@@ -25,11 +26,11 @@ public class Chapter {
     @NotBlank(message="description is mandatory")
     @Size(max=300,message="max number of characters is 300")
     private String description;
-    @NotBlank
+    @NotNull
     private Long sectionId;
 
     @OneToMany(mappedBy="chapter")
-    @NotBlank(message="elements are mandatory")
+    @NotEmpty(message="elements are mandatory")
     private List<Element> elements;
 
     @OneToMany(mappedBy="chapter")
