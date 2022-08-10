@@ -4,9 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import com.opencourse.chapter.entities.Chapter;
+import com.opencourse.chapter.entities.FinishedChapter;
+
 @Getter
 @Setter
 public class ChapterDto {
@@ -42,10 +45,16 @@ public class ChapterDto {
         c.setSectionId(cd.getSectionId());
         c.setTitle(cd.getTitle());
         c.setVideoUrl(cd.getVideoUrl());
+        c.setFinishedChapters(new ArrayList<FinishedChapter>());
         c.setElements(
             cd.getElements().stream()
             .map((e)->ElementDto.fromDto(e))
             .collect(Collectors.toList())
+        );
+        c.getElements().stream().forEach(
+            (element)->{
+                element.setChapter(c);
+            }
         );
         return c;
     }
