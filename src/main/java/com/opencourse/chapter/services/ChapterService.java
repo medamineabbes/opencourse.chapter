@@ -34,18 +34,18 @@ public class ChapterService {
     private final ElementRepo elementRepo;
     private final FinishedChapterRepo finishedChapterRepo;
     //add security
-    public ChapterLimitedDto addChapter(ChapterDto chapterDto){
+    public Long addChapter(ChapterDto chapterDto){
         //add chapter thene elements
         Chapter chapter=ChapterDto.fromDto(chapterDto);
         chapterRepo.save(chapter);
         elementRepo.saveAll(chapter.getElements());
-        return ChapterLimitedDto.fromChapter(chapter);
+        return chapter.getId();
     }
     //add security
-    public ElementDto addElement(ElementDto element){
+    public Long addElement(ElementDto element){
         Element e=ElementDto.fromDto(element);
         elementRepo.save(e);
-        return ElementDto.fromElement(e);
+        return e.getId();
     }
 
     public ChapterDto getChapterById(Long id)throws ChapterNotFoundException{

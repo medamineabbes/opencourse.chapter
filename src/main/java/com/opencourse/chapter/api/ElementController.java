@@ -23,7 +23,7 @@ public class ElementController {
     private final ChapterService service;
 
     @PostMapping
-    public ResponseEntity<ElementDto> addElement(@RequestBody @Valid ElementDto element){
+    public ResponseEntity<Long> addElement(@RequestBody @Valid ElementDto element){
         return ResponseEntity.ok(service.addElement(element));
     }
 

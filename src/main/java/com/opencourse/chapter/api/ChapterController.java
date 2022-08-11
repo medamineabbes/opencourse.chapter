@@ -27,7 +27,7 @@ public class ChapterController {
     private final ChapterService service;
 
     @PostMapping
-    public ResponseEntity<ChapterLimitedDto> addChapter(@RequestBody(required=true) @Valid ChapterDto chapter){
+    public ResponseEntity<Long> addChapter(@RequestBody(required=true) @Valid ChapterDto chapter){
         return ResponseEntity.ok(service.addChapter(chapter));
     }
     
