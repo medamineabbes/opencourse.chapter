@@ -5,6 +5,7 @@ import lombok.Setter;
 import com.opencourse.chapter.entities.Element;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -15,11 +16,13 @@ public class ElementDto {
     private String title;
     @NotBlank
     private String markdownContent;
-
+    @NotNull
+    private Long chapterId;
     public static ElementDto fromElement(Element e){
         ElementDto ed=new ElementDto();
         ed.setTitle(e.getTitle());
         ed.setMarkdownContent(e.getMarkdownContent());
+        ed.setChapterId(e.getChapter().getId());
         return ed;
     }
     
