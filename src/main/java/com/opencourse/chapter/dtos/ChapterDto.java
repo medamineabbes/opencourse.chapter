@@ -18,6 +18,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class ChapterDto {
+    private Long id;
     @NotBlank(message="title is mandatory")
     @Size(max=50,message="max number of characters is 50")
     private String title;
@@ -37,6 +38,7 @@ public class ChapterDto {
     public static ChapterDto fromChapter(Chapter c){
         ChapterDto cd=new ChapterDto();
         cd.setDescription(c.getDescription());
+        cd.setId(c.getId());
         cd.setSectionId(c.getSectionId());
         cd.setTitle(c.getTitle());
         cd.setFinished(false);
@@ -51,6 +53,7 @@ public class ChapterDto {
     public static Chapter fromDto(ChapterDto cd){
         Chapter c=new Chapter();
         c.setDescription(cd.getDescription());
+        c.setId(cd.getId());
         c.setSectionId(cd.getSectionId());
         c.setTitle(cd.getTitle());
         c.setVideoUrl(cd.getVideoUrl());

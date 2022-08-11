@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 @Data
 public class ChapterLimitedDto {
+    private Long id;
     @NotBlank(message="title is mandatory")
     @Size(max=50,message="max number of characters is 50")
     private String title;
@@ -21,6 +22,7 @@ public class ChapterLimitedDto {
     public static ChapterLimitedDto fromChapter(Chapter c){
         ChapterLimitedDto cd=new ChapterLimitedDto();
         cd.setDescription(c.getDescription());
+        cd.setId(c.getId());
         cd.setSectionId(c.getSectionId());
         cd.setTitle(c.getTitle());
         cd.setVideoUrl(c.getVideoUrl());

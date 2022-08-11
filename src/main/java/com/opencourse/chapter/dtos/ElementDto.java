@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class ElementDto {
+    private Long id;
     @NotBlank(message="title is mandatory")
     @Size(max=50,message="max number of characters is 50")
     private String title;
@@ -20,6 +21,7 @@ public class ElementDto {
     private Long chapterId;
     public static ElementDto fromElement(Element e){
         ElementDto ed=new ElementDto();
+        ed.setId(e.getId());
         ed.setTitle(e.getTitle());
         ed.setMarkdownContent(e.getMarkdownContent());
         ed.setChapterId(e.getChapter().getId());
@@ -28,6 +30,7 @@ public class ElementDto {
     
     public static Element fromDto(ElementDto ed){
         Element e=new Element();
+        e.setId(ed.getId());
         e.setMarkdownContent(ed.getMarkdownContent());
         e.setTitle(ed.getTitle());
         return e;
