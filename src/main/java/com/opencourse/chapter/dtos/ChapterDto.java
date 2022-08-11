@@ -10,15 +10,27 @@ import java.util.stream.Collectors;
 import com.opencourse.chapter.entities.Chapter;
 import com.opencourse.chapter.entities.FinishedChapter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Getter
 @Setter
 public class ChapterDto {
     private Long id;
+    @NotBlank(message="title is mandatory")
+    @Size(max=50,message="max number of characters is 50")
     private String title;
+    @NotBlank(message="video is mandatory")
     private String videoUrl;
+    @NotBlank(message="description is mandatory")
+    @Size(max=300,message="max number of characters is 300")
     private String description;
+    @NotNull
     private Long sectionId;
     private Boolean finished;
+    @NotEmpty(message="elements are mandatory")
     private List<ElementDto> elements;
     public ChapterDto(){
         

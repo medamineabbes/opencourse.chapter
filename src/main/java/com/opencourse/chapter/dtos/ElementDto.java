@@ -4,12 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import com.opencourse.chapter.entities.Element;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 public class ElementDto {
     private Long id;
+    @NotBlank(message="title is mandatory")
+    @Size(max=50,message="max number of characters is 50")
     private String title;
+    @NotBlank
     private String markdownContent;
 
     public static ElementDto fromElement(Element e){
