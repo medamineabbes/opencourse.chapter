@@ -16,7 +16,6 @@ import com.opencourse.chapter.entities.FinishedChapter;
 import com.opencourse.chapter.dtos.*;
 import com.opencourse.chapter.exceptions.ChapterAlreadyFinishedException;
 import com.opencourse.chapter.exceptions.ChapterNotFoundException;
-import com.opencourse.chapter.exceptions.ElementNotFoundException;
 import com.opencourse.chapter.exceptions.ChapterAlreadyUnFinishedException;
 /*
  * 
@@ -62,26 +61,6 @@ public class ChapterService {
         .stream().map(chapter-> ChapterLimitedDto.fromChapter(chapter))
         .collect(Collectors.toList());
     } 
-
-    //add security
-    public void updateChapter(ChapterLimitedDto cld){
-        Chapter c=chapterRepo.findById(cld.getId())
-        .orElseThrow(()->new ChapterNotFoundException(cld.getId()));
-        c.setDescription(cld.getDescription());
-        //c.setSectionId(sectionId);
-        c.setTitle(cld.getTitle());
-        c.setVideoUrl(cld.getVideoUrl());
-        chapterRepo.flush();
-    }
-
-    //add security
-    public void updateElement(ElementDto ed){
-        Element e=elementRepo.findById(ed.getId())
-        .orElseThrow(()-> new ElementNotFoundException(ed.getId()));
-        e.setMarkdownContent(ed.getMarkdownContent());
-        e.setTitle(ed.getTitle());
-        elementRepo.flush();
-    }
 
     //add security
     public void deleteCahpterById(Long id)throws ChapterNotFoundException{

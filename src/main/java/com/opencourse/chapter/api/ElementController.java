@@ -5,7 +5,6 @@ import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,12 +24,6 @@ public class ElementController {
     @PostMapping
     public ResponseEntity<Long> addElement(@RequestBody @Valid ElementDto element){
         return ResponseEntity.ok(service.addElement(element));
-    }
-
-    @PutMapping
-    public ResponseEntity<Void> updateElement(@RequestBody @Valid ElementDto element){
-        service.updateElement(element);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
