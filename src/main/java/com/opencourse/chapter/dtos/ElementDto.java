@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public class ElementDto {
     private Long id;
     @NotBlank(message="title is mandatory")
-    @Size(max=50,message="max number of characters is 50")
+    @Size(max=50,message="max number of characters in title  is 50")
     private String title;
     @NotBlank(message="markdownContent is mandatory")
     private String markdownContent;
