@@ -18,14 +18,7 @@ import com.opencourse.chapter.exceptions.ChapterAlreadyFinishedException;
 import com.opencourse.chapter.exceptions.ChapterNotFoundException;
 import com.opencourse.chapter.exceptions.ElementNotFoundException;
 import com.opencourse.chapter.exceptions.ChapterAlreadyUnFinishedException;
-/*
- * 
- * Post || Update || Delete request must be made by creator of the course
- * 
- * add preauth filter (spring security)
- * 
- * 
-*/
+
 @Service
 @Transactional
 @AllArgsConstructor
@@ -84,7 +77,7 @@ public class ChapterService {
     }
 
     //add security
-    public void deleteCahpterById(Long id)throws ChapterNotFoundException{
+    public void deleteChapterById(Long id)throws ChapterNotFoundException{
         //delete elements thene chapter
         Chapter c=chapterRepo.findById(id)
         .orElseThrow(()->new ChapterNotFoundException(id));

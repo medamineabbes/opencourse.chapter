@@ -47,19 +47,19 @@ public class ChapterController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{chapterId}")
     public ResponseEntity<Void> deleteChapter(@PathVariable(required=true) Long chapterId){
-        service.deleteCahpterById(chapterId);
+        service.deleteChapterById(chapterId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/finish/{id}")
+    @GetMapping("/finish/{chapterId}")
     public ResponseEntity<Void> finishChapter(@PathVariable(required=true) Long chapterId){
         Long userId=1L;//get from spring security later
         service.markChapterAsFinished(userId, chapterId);
         return ResponseEntity.ok().build();
     }
-    @PostMapping("/unfinish/{id}")
+    @GetMapping("/unfinish/{chapterId}")
     public ResponseEntity<Void> unfinishChapter(@PathVariable(required=true) Long chapterId){
         Long userId=1L;
         service.markChapterAsUnFinished(userId, chapterId);
