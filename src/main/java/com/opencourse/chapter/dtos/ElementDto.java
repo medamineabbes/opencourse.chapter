@@ -14,7 +14,7 @@ public class ElementDto {
     @NotBlank(message="title is mandatory")
     @Size(max=50,message="max number of characters is 50")
     private String title;
-    @NotBlank
+    @NotBlank(message="markdownContent is mandatory")
     private String markdownContent;
     private Long chapterId;
 

@@ -27,7 +27,7 @@ public class ChapterDto {
     @NotBlank(message="description is mandatory")
     @Size(max=300,message="max number of characters is 300")
     private String description;
-    @NotNull
+    @NotNull(message="sectionId is mandatory")
     private Long sectionId;
     private Boolean finished;
     @NotEmpty(message="elements are mandatory")
