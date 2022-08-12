@@ -13,18 +13,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.opencourse.chapter.exceptions.ChapterAlreadyFinishedException;
+import com.opencourse.chapter.exceptions.ChapterAlreadyUnFinishedException;
+import com.opencourse.chapter.exceptions.ChapterNotFoundException;
+import com.opencourse.chapter.exceptions.ElementNotFoundException;
 
 import lombok.Setter;
 import lombok.Getter;
 
 @RestControllerAdvice
 public class CustomResponseEntityExceptionHandler{
-    
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+
+
     @ExceptionHandler({ MethodArgumentNotValidException.class})
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request){
         List<String> errors=new ArrayList<String>();
@@ -61,9 +65,39 @@ public class CustomResponseEntityExceptionHandler{
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @ExceptionHandler({ChapterNotFoundException.class})
+    public ResponseEntity<Object> handleChapterNotFoundException(ChapterNotFoundException ex,WebRequest request){
+        ApiError error=new ApiError();
+        error.setStatus(HttpStatus.NOT_FOUND);
+        error.setMsg(ex.getLocalizedMessage());
+        error.setErrors(List.of(ex.getMessage()));
+        return new ResponseEntity<Object>(error,new HttpHeaders(),error.getStatus());
+    }
 
+    @ExceptionHandler({ElementNotFoundException.class})
+    public ResponseEntity<Object> handleElementNotFoundException(ElementNotFoundException ex,WebRequest request){
+        ApiError error=new ApiError();
+        error.setStatus(HttpStatus.NOT_FOUND);
+        error.setMsg(ex.getLocalizedMessage());
+        error.setErrors(List.of(ex.getMessage()));
+        return new ResponseEntity<Object>(error,new HttpHeaders(),error.getStatus());
+    }
 
+    @ExceptionHandler({ChapterAlreadyFinishedException.class})
+    public ResponseEntity<Object> handleChapterAlreadyFinishedExceptions(ChapterAlreadyFinishedException ex,WebRequest request){
+        ApiError apiError=new ApiError();
+        apiError.setStatus(HttpStatus.CONFLICT);
+        apiError.setMsg(ex.getMessage());
+        return new ResponseEntity<Object>(apiError,new HttpHeaders(),HttpStatus.CONFLICT);        
+    }
 
+    @ExceptionHandler({ChapterAlreadyUnFinishedException.class})
+    public ResponseEntity<Object> handleChapterAlreadyUnFinishedExceptions(ChapterAlreadyUnFinishedException ex,WebRequest request){
+        ApiError apiError=new ApiError();
+        apiError.setStatus(HttpStatus.CONFLICT);
+        apiError.setMsg(ex.getMessage());
+        return new ResponseEntity<Object>(apiError,new HttpHeaders(),HttpStatus.CONFLICT);        
+    }
 }
 
 
