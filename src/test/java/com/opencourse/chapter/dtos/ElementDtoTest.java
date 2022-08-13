@@ -12,7 +12,7 @@ public class ElementDtoTest {
         //given 
         Element e=new Element();
         e.setId(1L);
-        e.setMarkdownContent(null);
+        e.setMarkdownContent("content");
         e.setTitle("title");
         //whene
         ElementDto ed=ElementDto.fromElement(e);
@@ -20,13 +20,11 @@ public class ElementDtoTest {
         //thene assert(expected,actual)
         assertEquals(e.getTitle(),ed.getTitle());
         assertEquals(e.getMarkdownContent(),ed.getMarkdownContent());
-        assertEquals(e.getId(),ed.getId());
     }
     @Test
     public void conversionFromDtoTest(){
         //given
         ElementDto ed=new ElementDto();
-        ed.setId(1L);
         ed.setMarkdownContent("markdownContent ##egeg");
         ed.setTitle("title ed");
 
@@ -35,7 +33,6 @@ public class ElementDtoTest {
 
         //thene
 
-        assertEquals(ed.getId(),e.getId());
         assertEquals(ed.getTitle(),e.getTitle());
         assertEquals(ed.getMarkdownContent(),e.getMarkdownContent());
     }
