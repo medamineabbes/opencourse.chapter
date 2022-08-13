@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.opencourse.chapter.dtos.ChapterDto;
-import com.opencourse.chapter.dtos.ChapterLimitedDto;
 import com.opencourse.chapter.services.ChapterService;
 
 import lombok.AllArgsConstructor;
@@ -37,12 +36,12 @@ public class ChapterController {
     }
     
     @GetMapping("/section/{sectionId}")
-    public ResponseEntity<List<ChapterLimitedDto>> getChaptersBySectionId(@PathVariable(name = "sectionId") Long sectionId){
+    public ResponseEntity<List<ChapterDto>> getChaptersBySectionId(@PathVariable(name = "sectionId") Long sectionId){
         return ResponseEntity.ok(service.getChaptersBySectionId(sectionId));
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateChapter(@RequestBody(required=true) @Valid ChapterLimitedDto chapter){
+    public ResponseEntity<Void> updateChapter(@RequestBody(required=true) @Valid ChapterDto chapter){
         service.updateChapter(chapter);
         return ResponseEntity.ok().build();
     }

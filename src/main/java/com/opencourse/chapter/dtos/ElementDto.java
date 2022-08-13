@@ -17,7 +17,6 @@ public class ElementDto {
     @NotBlank(message="markdownContent is mandatory")
     private String markdownContent;
     private Long chapterId;
-
     public static ElementDto fromElement(Element e){
         ElementDto ed=new ElementDto();
         ed.setId(e.getId());

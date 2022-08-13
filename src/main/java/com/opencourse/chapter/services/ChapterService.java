@@ -28,15 +28,28 @@ public class ChapterService {
     private final FinishedChapterRepo finishedChapterRepo;
     //add security
     public Long addChapter(ChapterDto chapterDto){
-        //add chapter thene elements
+        /*
+         * 
+         * test if course created by user
+         */
+
+
         Chapter chapter=ChapterDto.fromDto(chapterDto);
         chapterRepo.save(chapter);
-        elementRepo.saveAll(chapter.getElements());
         return chapter.getId();
     }
     //add security
     public Long addElement(ElementDto element){
+
+        //test if chapter exists
+        Chapter c=chapterRepo
+        .findById(element.getChapterId())
+        .orElseThrow(()->new ChapterNotFoundException(element.getChapterId()));
+        /**
+         * test if course created by user
+         */
         Element e=ElementDto.fromDto(element);
+        e.setChapter(c);
         elementRepo.save(e);
         return e.getId();
     }
@@ -50,27 +63,42 @@ public class ChapterService {
         );
     }
 
-    public List<ChapterLimitedDto> getChaptersBySectionId(Long id){
+    public List<ChapterDto> getChaptersBySectionId(Long id){
         return chapterRepo.findBySectionId(id)
-        .stream().map(chapter-> ChapterLimitedDto.fromChapter(chapter))
+        .stream().map(chapter-> ChapterDto.fromChapter(chapter))
         .collect(Collectors.toList());
     } 
 
     //add security
-    public void updateChapter(ChapterLimitedDto cld){
+    public void updateChapter(ChapterDto cld){
+
+        /*
+         * test if chapter created by user
+         */
+
+        //make sure chapter exists
         Chapter c=chapterRepo.findById(cld.getId())
         .orElseThrow(()->new ChapterNotFoundException(cld.getId()));
+
+        //update chapter
         c.setDescription(cld.getDescription());
-        //c.setSectionId(sectionId);
         c.setTitle(cld.getTitle());
         c.setVideoUrl(cld.getVideoUrl());
+
         chapterRepo.flush();
     }
 
     //add security
     public void updateElement(ElementDto ed){
+        /*
+         * test if course created by user
+         */
+
+         //make sure element exists
         Element e=elementRepo.findById(ed.getId())
         .orElseThrow(()-> new ElementNotFoundException(ed.getId()));
+
+        //update element
         e.setMarkdownContent(ed.getMarkdownContent());
         e.setTitle(ed.getTitle());
         elementRepo.flush();
@@ -78,12 +106,9 @@ public class ChapterService {
 
     //add security
     public void deleteChapterById(Long id)throws ChapterNotFoundException{
+        Chapter c=chapterRepo.findById(id).orElseThrow(()->new ChapterNotFoundException(id));
         //delete elements thene chapter
-        Chapter c=chapterRepo.findById(id)
-        .orElseThrow(()->new ChapterNotFoundException(id));
-        c.getElements().stream()
-        .forEach((e)->elementRepo.deleteById(e.getId()));
-        chapterRepo.deleteById(id);
+        chapterRepo.deleteById(c.getId());
     }  
 
     //add security
@@ -94,30 +119,33 @@ public class ChapterService {
     public void markChapterAsFinished(Long userId,Long chapterId){
         //if chapter is allready finished thene ignore
         Optional<FinishedChapter> isFinished=finishedChapterRepo.findByUserIdAndChapterId(userId, chapterId);
+        
+        //make sure chapter exists
         Chapter chapter=chapterRepo.findById(chapterId)
         .orElseThrow(()->new ChapterNotFoundException(chapterId));
         
-        if(isFinished.isEmpty()){
+        if(isFinished.isEmpty()){//if chapter is nt finished 
             FinishedChapter fc=new FinishedChapter();
             fc.setChapter(chapter);
             fc.setUserId(userId);
             finishedChapterRepo.save(fc);
-        }else{
+        }else{//if chapter is finished
             throw new ChapterAlreadyFinishedException(chapterId);
         }
     }
 
     public void markChapterAsUnFinished(Long userId,Long chapterId){
+        //make sure chapter exists
         chapterRepo.findById(chapterId)
         .orElseThrow(
             ()-> new ChapterNotFoundException(chapterId)
             );
-
+        //if chapter is unfinished throw exception
         FinishedChapter isFinished=finishedChapterRepo.findByUserIdAndChapterId(userId, chapterId)
         .orElseThrow(
             ()->new ChapterAlreadyUnFinishedException(chapterId)
             );
-        
+        //else remove from finished chapters 
         finishedChapterRepo.deleteById(isFinished.getId());
     }
 }
