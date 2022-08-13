@@ -75,6 +75,16 @@ public class ChapterService {
         .orElseThrow(()->new ElementNotFoundException(id));
         return ElementDto.fromElement(e);
     }
+    
+    public List<ElementDto> getElementsByChapterId(Long id){
+        Chapter chapter=chapterRepo
+        .findById(id)
+        .orElseThrow(()->new ChapterNotFoundException(id));
+        return chapter.getElements()
+        .stream()
+        .map(element->ElementDto.fromElement(element))
+        .collect(Collectors.toList());
+    }
     //add security
     public void updateChapter(ChapterDto cld){
 

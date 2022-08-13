@@ -1,5 +1,5 @@
 package com.opencourse.chapter.api;
-
+import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -41,5 +41,9 @@ public class ElementController {
     public ResponseEntity<Void> deleteElement(@PathVariable Long id){
         service.deleteElementById(id);
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/chapter/{id}")
+    public ResponseEntity<List<ElementDto>> getElementsByChapterId(@PathVariable(required=true) Long id){
+        return ResponseEntity.ok(service.getElementsByChapterId(id));
     }
 }
