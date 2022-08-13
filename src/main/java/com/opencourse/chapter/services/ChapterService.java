@@ -69,6 +69,12 @@ public class ChapterService {
         .collect(Collectors.toList());
     } 
 
+    public ElementDto getElementById(Long id){
+        Element e=elementRepo
+        .findById(id)
+        .orElseThrow(()->new ElementNotFoundException(id));
+        return ElementDto.fromElement(e);
+    }
     //add security
     public void updateChapter(ChapterDto cld){
 

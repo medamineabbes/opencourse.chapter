@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ElementController {
     private final ChapterService service;
-
+    @GetMapping
+    public ResponseEntity<ElementDto> getElemenetById(Long id){
+        return ResponseEntity.ok(service.getElementById(id));
+    }
     @PostMapping
     public ResponseEntity<Long> addElement(@RequestBody @Valid ElementDto element){
         return ResponseEntity.ok(service.addElement(element));
