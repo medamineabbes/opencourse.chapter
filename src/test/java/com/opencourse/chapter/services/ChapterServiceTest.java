@@ -74,17 +74,17 @@ public class ChapterServiceTest {
     @DisplayName("get chapter by id error test")
     public void getChapterBySectionError()throws Exception{
         when(chRepo.findById(1L)).thenReturn(Optional.empty());
-        Exception exception=assertThrows(ChapterNotFoundException.class,()->{
+        assertThrows(ChapterNotFoundException.class,()->{
             service.getChapterById(1L);
         });
     }
 
 
     @Test
-    @DisplayName("update chapter test")
+    @DisplayName("update chapter error test")
     public void updateChapterErrorTest()throws Exception{
         when(chRepo.findById(1L)).thenReturn(Optional.empty());
-        Exception exception=assertThrows(ChapterNotFoundException.class,()->{
+        assertThrows(ChapterNotFoundException.class,()->{
             service.updateChapter(ChapterDto.fromChapter(c));
         });
     }
@@ -102,7 +102,7 @@ public class ChapterServiceTest {
     @DisplayName("update element error test")
     public void updateElementError(){
         when(elRepo.findById(1L)).thenReturn(Optional.empty());
-        Exception exception=assertThrows(ElementNotFoundException.class,()->{
+        assertThrows(ElementNotFoundException.class,()->{
             service.updateElement(ElementDto.fromElement(e));
         });
     }
@@ -122,7 +122,7 @@ public class ChapterServiceTest {
     @DisplayName("delete chapter by id error test")
     public void DeleteChapterErrorTest(){
         when(chRepo.findById(1L)).thenReturn(Optional.empty());
-        Exception exception=assertThrows(ChapterNotFoundException.class,()->{
+        assertThrows(ChapterNotFoundException.class,()->{
             service.deleteChapterById(1L);
         });
     }
@@ -194,10 +194,9 @@ public class ChapterServiceTest {
     @DisplayName("mark chapter as fnished error test")
     public void shouldThrowChapterNotFoundException(){
         when(chRepo.findById(1L)).thenReturn(Optional.empty());
-        Exception exception=assertThrows(ChapterNotFoundException.class,()->{
+        assertThrows(ChapterNotFoundException.class,()->{
             service.markChapterAsFinished(15L, 1L);
-        });  
-        assertEquals("chapter with id : 1 not found", exception.getMessage());      
+        });       
     }
 
     @Test
@@ -215,10 +214,9 @@ public class ChapterServiceTest {
         when(chRepo.findById(1L)).thenReturn(Optional.of(c));
         when(fcRepo.findByUserIdAndChapterId(15L, 1L)).thenReturn(Optional.of(fc));
         
-        Exception exception=assertThrows(ChapterAlreadyFinishedException.class,()->{
+        assertThrows(ChapterAlreadyFinishedException.class,()->{
             service.markChapterAsFinished(15L, 1L);
         });
-        assertEquals("chapter with id : 1 already finished",exception.getMessage());
     }
     
     
@@ -230,10 +228,9 @@ public class ChapterServiceTest {
         c.setTitle("title");
         when(chRepo.findById(1L)).thenReturn(Optional.of(c));
         when(fcRepo.findByUserIdAndChapterId(15L, 1L)).thenReturn(Optional.empty());
-        Exception exception=assertThrows(ChapterAlreadyUnFinishedException.class,()->{
+        assertThrows(ChapterAlreadyUnFinishedException.class,()->{
             service.markChapterAsUnFinished(15L, 1L);
         });
-        assertEquals("chapter with id : 1 already not finished", exception.getMessage());
     }
 
 }
