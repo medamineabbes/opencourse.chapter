@@ -71,7 +71,7 @@ public class ChapterControllerTest {
     @Test
     @DisplayName("add Chapter Test 200 status code")
     public void addChapterTest()throws Exception{
-        when(service.addChapter(c)).thenReturn(1L);
+        when(service.addChapter(c,15L)).thenReturn(1L);
         
         Map<String,Object> body1=new HashMap<String,Object>();
         body1.put("title","title e1");
@@ -107,7 +107,7 @@ public class ChapterControllerTest {
         
         doAnswer(i->{
             return null;
-        }).when(service).updateChapter(cld);
+        }).when(service).updateChapter(cld,15L);
 
         Map<String,Object> mainBody=new HashMap<String,Object>();
         mainBody.put("title","title");
@@ -116,6 +116,7 @@ public class ChapterControllerTest {
         mainBody.put("description","description");
 
         ObjectMapper mapper=new ObjectMapper();
+        
         mvc.perform(
             put(basePath)
             .content(mapper.writeValueAsString(mainBody))
@@ -129,7 +130,7 @@ public class ChapterControllerTest {
     public void deleteChapterTest()throws Exception{
         doAnswer(i->{
             return null;
-        }).when(service).deleteChapterById(1L);
+        }).when(service).deleteChapterById(1L,15L);
 
         mvc.perform(
             delete(basePath + "/1")
@@ -143,7 +144,7 @@ public class ChapterControllerTest {
     public void markChapterAsFinishedTest()throws Exception{
         doAnswer(i->{
             return null;
-        }).when(service).markChapterAsFinished(1L, 1L);
+        }).when(service).markChapterAsFinished(1L, 15L);
 
         mvc.perform(
             get(basePath + "/finish/1")

@@ -81,7 +81,7 @@ public class ElementControllerTest {
     @Test
     @DisplayName("adding element test")
     public void addingElementTest()throws Exception{
-        when(service.addElement(ed)).thenReturn(1L);
+        when(service.addElement(ed,15L)).thenReturn(1L);
         Map<String,Object> body=new HashMap<>();
         body.put("title", "title");
         body.put("markdownContent","markdownContent");
@@ -101,12 +101,12 @@ public class ElementControllerTest {
     public void deletingElementTest()throws Exception{
         doAnswer(i->{
             return null;
-        }).when(service).deleteElementById(1L);
+        }).when(service).deleteElementById(1L,15L);
         mvc.perform(
             delete(basePath + "/1")
             ).andDo(print())
             .andExpect(status().isOk());
-        Mockito.verify(service).deleteElementById(1L);
+        Mockito.verify(service).deleteElementById(1L,15L);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class ElementControllerTest {
     public void updatingElementTest()throws Exception{
         doAnswer(i->{
             return null;
-        }).when(service).updateElement(ed);
+        }).when(service).updateElement(ed,15L);
         Map<String,Object> body=new HashMap<>();
         body.put("title", "title");
         body.put("markdownContent","markdownContent");
