@@ -24,26 +24,34 @@ public class ElementController {
     private final ChapterService service;
     @GetMapping
     public ResponseEntity<ElementDto> getElemenetById(Long id){
-        return ResponseEntity.ok(service.getElementById(id));
+        Long userId=15L;
+        return ResponseEntity.ok(service.getElementById(id,userId));
     }
+
     @PostMapping
     public ResponseEntity<Long> addElement(@RequestBody @Valid ElementDto element){
-        return ResponseEntity.ok(service.addElement(element));
+        Long userId=15L;
+        return ResponseEntity.ok(service.addElement(element,userId));
     }
 
     @PutMapping
     public ResponseEntity<Void> updateElement(@RequestBody @Valid ElementDto element){
-        service.updateElement(element);
+        Long userId=15L;
+        service.updateElement(element,userId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteElement(@PathVariable Long id){
-        service.deleteElementById(id);
+        Long userId=15L;
+        service.deleteElementById(id,userId);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/chapter/{id}")
     public ResponseEntity<List<ElementDto>> getElementsByChapterId(@PathVariable(required=true) Long id){
-        return ResponseEntity.ok(service.getElementsByChapterId(id));
+        Long userId=15L;
+        return ResponseEntity.ok(service.getElementsByChapterId(id,userId));
     }
+
 }

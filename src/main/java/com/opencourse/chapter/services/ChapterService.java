@@ -17,6 +17,8 @@ import com.opencourse.chapter.dtos.*;
 import com.opencourse.chapter.exceptions.ChapterAlreadyFinishedException;
 import com.opencourse.chapter.exceptions.ChapterNotFoundException;
 import com.opencourse.chapter.exceptions.ElementNotFoundException;
+import com.opencourse.chapter.exceptions.UnAuhorizedActionException;
+import com.opencourse.chapter.externalservices.CourseService;
 import com.opencourse.chapter.exceptions.ChapterAlreadyUnFinishedException;
 
 @Service
@@ -26,75 +28,107 @@ public class ChapterService {
     private final ChapterRepo chapterRepo;
     private final ElementRepo elementRepo;
     private final FinishedChapterRepo finishedChapterRepo;
-    //add security
-    public Long addChapter(ChapterDto chapterDto){
-        /*
-         * 
-         * test if course created by user
-         */
+    private final CourseService courseService;
+    
 
+    //only teachers
+    public Long addChapter(ChapterDto chapterDto,Long userId){
+        
+        //make sure user created Section
+        if(!courseService.userCreatedSection(chapterDto.getSectionId(), userId))
+        throw new UnAuhorizedActionException();
 
         Chapter chapter=ChapterDto.fromDto(chapterDto);
         chapterRepo.save(chapter);
         return chapter.getId();
     }
-    //add security
-    public Long addElement(ElementDto element){
+    //only teachers 
+    public Long addElement(ElementDto element,Long userId){
 
-        //test if chapter exists
+        //make sure chapter exists
         Chapter c=chapterRepo
         .findById(element.getChapterId())
         .orElseThrow(()->new ChapterNotFoundException(element.getChapterId()));
-        /**
-         * test if course created by user
-         */
+        
+        //make sure user created Section
+        if(!courseService.userCreatedSection(c.getSectionId(), userId))
+        throw new UnAuhorizedActionException();
+
         Element e=ElementDto.fromDto(element);
         e.setChapter(c);
         elementRepo.save(e);
         return e.getId();
     }
 
-    public ChapterDto getChapterById(Long id)throws ChapterNotFoundException{
-        return ChapterDto.fromChapter(
-            chapterRepo.findById(id)
-            .orElseThrow(
-                ()->new ChapterNotFoundException(id)
-                )
-        );
+    //authentic users
+    public ChapterDto getChapterById(Long id,Long userId){
+        
+        //make sure chapter exists
+        Chapter chapter=chapterRepo
+        .findById(id)
+        .orElseThrow(()->new ChapterNotFoundException(id));
+        
+        //make sure user hase access to chapter
+        if(!courseService.userHasAccessToSection(chapter.getSectionId(), userId))    
+        throw new ChapterNotFoundException(id);
+        return ChapterDto.fromChapter(chapter);
     }
 
-    public List<ChapterDto> getChaptersBySectionId(Long id){
+    //authentic users
+    public List<ChapterDto> getChaptersBySectionId(Long id,Long userId){
+        //make sure user has access
+        if(!courseService.userHasAccessToSection(id, userId))
+        throw new ChapterNotFoundException("not chapters found");
+
         return chapterRepo.findBySectionId(id)
         .stream().map(chapter-> ChapterDto.fromChapter(chapter))
         .collect(Collectors.toList());
     } 
 
-    public ElementDto getElementById(Long id){
+    //auhentic users
+    public ElementDto getElementById(Long id,Long userId){
+        
+        //make sure elements exists
         Element e=elementRepo
         .findById(id)
         .orElseThrow(()->new ElementNotFoundException(id));
+        
+        //make sure user has access
+        if(!courseService.userHasAccessToSection(e.getChapter().getSectionId(), userId))
+        throw new ElementNotFoundException(id);
+
         return ElementDto.fromElement(e);
     }
     
-    public List<ElementDto> getElementsByChapterId(Long id){
+    //authetic users
+    public List<ElementDto> getElementsByChapterId(Long id,Long userId){
+
+        //make sure chapter exists
         Chapter chapter=chapterRepo
         .findById(id)
         .orElseThrow(()->new ChapterNotFoundException(id));
+        
+        //make sure user has acces
+        if(!courseService.userHasAccessToSection(chapter.getSectionId(), userId))
+        throw new ChapterNotFoundException(id);
+        
         return chapter.getElements()
         .stream()
         .map(element->ElementDto.fromElement(element))
         .collect(Collectors.toList());
-    }
-    //add security
-    public void updateChapter(ChapterDto cld){
 
-        /*
-         * test if chapter created by user
-         */
+    }
+    
+    //only teachers
+    public void updateChapter(ChapterDto cld,Long userId){
 
         //make sure chapter exists
         Chapter c=chapterRepo.findById(cld.getId())
         .orElseThrow(()->new ChapterNotFoundException(cld.getId()));
+
+        //make sure chapter created by user
+        if(!courseService.userCreatedSection(c.getSectionId(), userId))
+        throw new UnAuhorizedActionException();
 
         //update chapter
         c.setDescription(cld.getDescription());
@@ -104,15 +138,16 @@ public class ChapterService {
         chapterRepo.flush();
     }
 
-    //add security
-    public void updateElement(ElementDto ed){
-        /*
-         * test if course created by user
-         */
-
-         //make sure element exists
+    //only teachers
+    public void updateElement(ElementDto ed,Long userId){
+        
+        //make sure element exists
         Element e=elementRepo.findById(ed.getId())
         .orElseThrow(()-> new ElementNotFoundException(ed.getId()));
+        
+        //make sure user created chapter
+        if(!courseService.userCreatedSection(e.getChapter().getSectionId(),userId))
+        throw new UnAuhorizedActionException();
 
         //update element
         e.setMarkdownContent(ed.getMarkdownContent());
@@ -120,25 +155,48 @@ public class ChapterService {
         elementRepo.flush();
     }
 
-    //add security
-    public void deleteChapterById(Long id)throws ChapterNotFoundException{
-        Chapter c=chapterRepo.findById(id).orElseThrow(()->new ChapterNotFoundException(id));
-        //delete elements thene chapter
+    //only teachers
+    public void deleteChapterById(Long id,Long userId){
+        //make sure chapter exists
+        Chapter c=chapterRepo.findById(id)
+        .orElseThrow(()->new ChapterNotFoundException(id));
+
+        //make sure chapter created by user
+        if(!courseService.userCreatedSection(c.getSectionId(), userId))
+        throw new UnAuhorizedActionException();
+
         chapterRepo.deleteById(c.getId());
     }  
 
-    //add security
-    public void deleteElementById(Long id){
+    //only teachers
+    public void deleteElementById(Long id,Long userId){
+        
+        //make sure element exists
+        Element element=elementRepo.findById(id)
+        .orElseThrow(()->new ElementNotFoundException(id));
+        
+        //make sure chapter created by user
+        if(courseService.userCreatedSection(element.getChapter().getSectionId(), userId))
+        throw new UnAuhorizedActionException();
+
         elementRepo.deleteById(id);
     }
     
-    public void markChapterAsFinished(Long userId,Long chapterId){
-        //if chapter is allready finished thene ignore
-        Optional<FinishedChapter> isFinished=finishedChapterRepo.findByUserIdAndChapterId(userId, chapterId);
-        
+    //only authentic users 
+    public void markChapterAsFinished(Long chapterId,Long userId){
+
         //make sure chapter exists
         Chapter chapter=chapterRepo.findById(chapterId)
         .orElseThrow(()->new ChapterNotFoundException(chapterId));
+
+        //make sure use has access to chapter
+        if(!courseService.userHasAccessToSection(chapter.getSectionId(), userId))
+        throw new ChapterNotFoundException(chapterId);
+
+
+        Optional<FinishedChapter> isFinished=finishedChapterRepo
+        .findByUserIdAndChapterId(userId, chapterId);
+
         
         if(isFinished.isEmpty()){//if chapter is nt finished 
             FinishedChapter fc=new FinishedChapter();
@@ -149,13 +207,17 @@ public class ChapterService {
             throw new ChapterAlreadyFinishedException(chapterId);
         }
     }
-
-    public void markChapterAsUnFinished(Long userId,Long chapterId){
+    
+    //only authentic users
+    public void markChapterAsUnFinished(Long chapterId,Long userId){
         //make sure chapter exists
-        chapterRepo.findById(chapterId)
-        .orElseThrow(
-            ()-> new ChapterNotFoundException(chapterId)
-            );
+        Chapter chapter=chapterRepo.findById(chapterId)
+        .orElseThrow(()-> new ChapterNotFoundException(chapterId));
+
+        //make sure user has access to chapter
+        if(!courseService.userHasAccessToSection(chapter.getSectionId(), userId))
+        throw new ChapterNotFoundException(chapterId);
+
         //if chapter is unfinished throw exception
         FinishedChapter isFinished=finishedChapterRepo.findByUserIdAndChapterId(userId, chapterId)
         .orElseThrow(
@@ -164,4 +226,26 @@ public class ChapterService {
         //else remove from finished chapters 
         finishedChapterRepo.deleteById(isFinished.getId());
     }
+
+    //only course service
+    public boolean validSections(List<Long> sectionIds){
+        for(int i=0;i<sectionIds.size();i++){
+            Long sectionId=sectionIds.get(i);
+            List<Chapter> chapters=chapterRepo.findBySectionId(sectionId);
+
+            //make sure more than 2 chapters per section
+            if(chapters.size()<2)
+            return false;
+            for(int j=0;j<chapters.size();j++){
+                Chapter chapter=chapters.get(j);
+
+                //make sure more than 2 elements per chapter
+                if(chapter.getElements().size()<2)
+                return false;
+            }
+            
+        }
+        return true;
+    }
+
 }

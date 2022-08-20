@@ -21,6 +21,7 @@ import com.opencourse.chapter.exceptions.ChapterAlreadyFinishedException;
 import com.opencourse.chapter.exceptions.ChapterAlreadyUnFinishedException;
 import com.opencourse.chapter.exceptions.ChapterNotFoundException;
 import com.opencourse.chapter.exceptions.ElementNotFoundException;
+import com.opencourse.chapter.exceptions.UnAuhorizedActionException;
 
 import lombok.Setter;
 import lombok.Getter;
@@ -29,6 +30,7 @@ import lombok.Getter;
 public class CustomResponseEntityExceptionHandler{
 
 
+    
     @ExceptionHandler({ MethodArgumentNotValidException.class})
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request){
         List<String> errors=new ArrayList<String>();
@@ -41,6 +43,7 @@ public class CustomResponseEntityExceptionHandler{
         apiError.setStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
+
     @ExceptionHandler({ ConstraintViolationException.class })
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
         List<String> errors = new ArrayList<String>();
@@ -95,6 +98,14 @@ public class CustomResponseEntityExceptionHandler{
     public ResponseEntity<Object> handleChapterAlreadyUnFinishedExceptions(ChapterAlreadyUnFinishedException ex,WebRequest request){
         ApiError apiError=new ApiError();
         apiError.setStatus(HttpStatus.CONFLICT);
+        apiError.setMsg(ex.getMessage());
+        return new ResponseEntity<Object>(apiError,new HttpHeaders(),HttpStatus.CONFLICT);        
+    }
+
+    @ExceptionHandler({UnAuhorizedActionException.class})
+    public ResponseEntity<Object> handleUnAuhorizedActionExceptions(UnAuhorizedActionException ex,WebRequest request){
+        ApiError apiError=new ApiError();
+        apiError.setStatus(HttpStatus.UNAUTHORIZED);
         apiError.setMsg(ex.getMessage());
         return new ResponseEntity<Object>(apiError,new HttpHeaders(),HttpStatus.CONFLICT);        
     }

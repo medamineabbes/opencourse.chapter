@@ -25,43 +25,63 @@ import lombok.AllArgsConstructor;
 public class ChapterController {
     private final ChapterService service;
 
+    //only teachers
     @PostMapping
     public ResponseEntity<Long> addChapter(@RequestBody(required=true) @Valid ChapterDto chapter){
-        return ResponseEntity.ok(service.addChapter(chapter));
+        Long userId=15L;
+        return ResponseEntity.ok(service.addChapter(chapter,userId));
     }
     
+    //authentic users
     @GetMapping("/{id}")
     public ResponseEntity<ChapterDto> getById(@PathVariable(required=true) Long id){
-        return ResponseEntity.ok(service.getChapterById(id));
+        Long userId=15L;
+        return ResponseEntity.ok(service.getChapterById(id,userId));
     }
     
+    //authentic users
     @GetMapping("/section/{sectionId}")
     public ResponseEntity<List<ChapterDto>> getChaptersBySectionId(@PathVariable(name = "sectionId") Long sectionId){
-        return ResponseEntity.ok(service.getChaptersBySectionId(sectionId));
+        Long userId=15L;
+        return ResponseEntity.ok(service.getChaptersBySectionId(sectionId,userId));
     }
 
+    //only teachers
     @PutMapping
     public ResponseEntity<Void> updateChapter(@RequestBody(required=true) @Valid ChapterDto chapter){
-        service.updateChapter(chapter);
+        Long userId=15L;
+        service.updateChapter(chapter,userId);
         return ResponseEntity.ok().build();
     }
 
+    //only authentic users
     @DeleteMapping("/{chapterId}")
     public ResponseEntity<Void> deleteChapter(@PathVariable(required=true) Long chapterId){
-        service.deleteChapterById(chapterId);
+        Long userId=15L;
+        service.deleteChapterById(chapterId,userId);
         return ResponseEntity.ok().build();
     }
 
+    //authentic users
     @GetMapping("/finish/{chapterId}")
     public ResponseEntity<Void> finishChapter(@PathVariable(required=true) Long chapterId){
-        Long userId=1L;//get from spring security later
-        service.markChapterAsFinished(userId, chapterId);
+        Long userId=15L;
+        service.markChapterAsFinished(chapterId,userId);
         return ResponseEntity.ok().build();
     }
+    
+    //authentic users
     @GetMapping("/unfinish/{chapterId}")
     public ResponseEntity<Void> unfinishChapter(@PathVariable(required=true) Long chapterId){
         Long userId=1L;
-        service.markChapterAsUnFinished(userId, chapterId);
+        service.markChapterAsUnFinished(chapterId,userId);
         return ResponseEntity.ok().build();
     }
+
+    //only courseService
+    @PostMapping("/valid")
+    public ResponseEntity<Boolean> validSections(@RequestBody(required = true) List<Long> sectionIds){
+        return ResponseEntity.ok(service.validSections(sectionIds));
+    }
+    
 }
