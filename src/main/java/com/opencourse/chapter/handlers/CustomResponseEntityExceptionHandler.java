@@ -54,7 +54,7 @@ public class CustomResponseEntityExceptionHandler{
         ApiError apiError = new ApiError();
         apiError.setErrors(errors);
         apiError.setMsg(ex.getLocalizedMessage());
-        apiError.setStatus(HttpStatus.NOT_FOUND);
+        apiError.setStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
