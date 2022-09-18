@@ -25,10 +25,10 @@ public class ElementController {
     private final ChapterService service;
 
     //only authentic users
-    @GetMapping
-    public ResponseEntity<ElementDto> getElemenetById(Long id){
+    @GetMapping("/{elementId}")
+    public ResponseEntity<ElementDto> getElemenetById(@PathVariable Long elementId){
         Long userId=15L;
-        return ResponseEntity.ok(service.getElementById(id,userId));
+        return ResponseEntity.ok(service.getElementById(elementId,userId));
     }
 
     //only teachers

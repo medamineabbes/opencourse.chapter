@@ -4,14 +4,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.opencourse.chapter.prop.ExternalServiceProp;
+
 import lombok.Data;
 
 @Service
 public class CourseService{
 
     RestTemplate restTemplate;
-    private String baseUrl="https://opencourse-course.herokuapp.com/api/v1";
-    public CourseService(){
+    private final ExternalServiceProp prop;
+
+
+    public CourseService(ExternalServiceProp prop){
+        this.prop=prop;
         restTemplate=new RestTemplate();
     }
 
@@ -19,7 +24,7 @@ public class CourseService{
         AccessDto dto=new AccessDto();
         dto.setSectionId(sectionId);
         dto.setUserId(userId);
-        ResponseEntity<Boolean> response=restTemplate.postForEntity(baseUrl + "/subscription", dto, Boolean.class);
+        ResponseEntity<Boolean> response=restTemplate.postForEntity(prop.getSectionSubUrl(), dto, Boolean.class);
         return response.getBody();
     }
     
@@ -27,7 +32,7 @@ public class CourseService{
         AccessDto dto=new AccessDto();
         dto.setSectionId(sectionId);
         dto.setUserId(userId);
-        ResponseEntity<Boolean> response=restTemplate.postForEntity(baseUrl + "/course/section/creator", dto, Boolean.class);
+        ResponseEntity<Boolean> response=restTemplate.postForEntity(prop.getSectionCreatorUrl(), dto, Boolean.class);
         return response.getBody();
     }
 

@@ -42,6 +42,7 @@ public class ChapterService {
         chapterRepo.save(chapter);
         return chapter.getId();
     }
+    
     //only teachers 
     public Long addElement(ElementDto element,Long userId){
 
@@ -157,6 +158,7 @@ public class ChapterService {
 
     //only teachers
     public void deleteChapterById(Long id,Long userId){
+        
         //make sure chapter exists
         Chapter c=chapterRepo.findById(id)
         .orElseThrow(()->new ChapterNotFoundException(id));

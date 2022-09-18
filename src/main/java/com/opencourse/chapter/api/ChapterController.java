@@ -18,11 +18,12 @@ import com.opencourse.chapter.dtos.ChapterDto;
 import com.opencourse.chapter.services.ChapterService;
 
 import lombok.AllArgsConstructor;
-//https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
+
 @RestController
 @RequestMapping("/api/v1/chapter")
 @AllArgsConstructor
 public class ChapterController {
+    
     private final ChapterService service;
 
     //only teachers
