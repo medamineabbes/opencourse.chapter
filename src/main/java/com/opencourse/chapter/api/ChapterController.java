@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -18,10 +19,12 @@ import com.opencourse.chapter.dtos.ChapterDto;
 import com.opencourse.chapter.services.ChapterService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/chapter")
 @AllArgsConstructor
+@Slf4j
 public class ChapterController {
     
     private final ChapterService service;
@@ -49,15 +52,15 @@ public class ChapterController {
 
     //only teachers
     @PutMapping
-    public ResponseEntity<Void> updateChapter(@RequestBody(required=true) @Valid ChapterDto chapter){
+    public ResponseEntity<Object> updateChapter(@RequestBody(required=true) @Valid ChapterDto chapter){
         Long userId=15L;
         service.updateChapter(chapter,userId);
         return ResponseEntity.ok().build();
     }
 
-    //only authentic users
+    //only teacher
     @DeleteMapping("/{chapterId}")
-    public ResponseEntity<Void> deleteChapter(@PathVariable(required=true) Long chapterId){
+    public ResponseEntity<Object> deleteChapter(@PathVariable(required=true) Long chapterId){
         Long userId=15L;
         service.deleteChapterById(chapterId,userId);
         return ResponseEntity.ok().build();
@@ -65,7 +68,7 @@ public class ChapterController {
 
     //authentic users
     @GetMapping("/finish/{chapterId}")
-    public ResponseEntity<Void> finishChapter(@PathVariable(required=true) Long chapterId){
+    public ResponseEntity<Object> finishChapter(@PathVariable(required=true) Long chapterId){
         Long userId=15L;
         service.markChapterAsFinished(chapterId,userId);
         return ResponseEntity.ok().build();
@@ -73,7 +76,7 @@ public class ChapterController {
     
     //authentic users
     @GetMapping("/unfinish/{chapterId}")
-    public ResponseEntity<Void> unfinishChapter(@PathVariable(required=true) Long chapterId){
+    public ResponseEntity<Object> unfinishChapter(@PathVariable(required=true) Long chapterId){
         Long userId=1L;
         service.markChapterAsUnFinished(chapterId,userId);
         return ResponseEntity.ok().build();
@@ -81,7 +84,8 @@ public class ChapterController {
 
     //only courseService
     @PostMapping("/valid")
-    public ResponseEntity<Boolean> validSections(@RequestBody(required = true) List<Long> sectionIds){
+    public ResponseEntity<Boolean> validSections(@RequestParam(required = true) List<Long> sectionIds){
+        log.info("size is " + sectionIds.size());
         return ResponseEntity.ok(service.validSections(sectionIds));
     }
     

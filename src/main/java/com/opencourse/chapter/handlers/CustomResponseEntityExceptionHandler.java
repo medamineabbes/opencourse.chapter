@@ -20,6 +20,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import com.opencourse.chapter.exceptions.ChapterAlreadyFinishedException;
 import com.opencourse.chapter.exceptions.ChapterAlreadyUnFinishedException;
 import com.opencourse.chapter.exceptions.ChapterNotFoundException;
+import com.opencourse.chapter.exceptions.CustomAuthenticationException;
 import com.opencourse.chapter.exceptions.ElementNotFoundException;
 import com.opencourse.chapter.exceptions.UnAuhorizedActionException;
 
@@ -96,6 +97,14 @@ public class CustomResponseEntityExceptionHandler{
 
     @ExceptionHandler({ChapterAlreadyUnFinishedException.class})
     public ResponseEntity<Object> handleChapterAlreadyUnFinishedExceptions(ChapterAlreadyUnFinishedException ex,WebRequest request){
+        ApiError apiError=new ApiError();
+        apiError.setStatus(HttpStatus.CONFLICT);
+        apiError.setMsg(ex.getMessage());
+        return new ResponseEntity<Object>(apiError,new HttpHeaders(),HttpStatus.CONFLICT);        
+    }
+
+    @ExceptionHandler({CustomAuthenticationException.class})
+    public ResponseEntity<Object> handleCustomAuthenticationExceptions(CustomAuthenticationException ex,WebRequest request){
         ApiError apiError=new ApiError();
         apiError.setStatus(HttpStatus.CONFLICT);
         apiError.setMsg(ex.getMessage());

@@ -40,7 +40,7 @@ public class ElementController {
 
     //only teachers
     @PutMapping
-    public ResponseEntity<Void> updateElement(@RequestBody @Valid ElementDto element){
+    public ResponseEntity<Object> updateElement(@RequestBody @Valid ElementDto element){
         Long userId=15L;
         service.updateElement(element,userId);
         return ResponseEntity.ok().build();
@@ -48,7 +48,7 @@ public class ElementController {
 
     //only teachers
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteElement(@PathVariable Long id){
+    public ResponseEntity<Object> deleteElement(@PathVariable Long id){
         Long userId=15L;
         service.deleteElementById(id,userId);
         return ResponseEntity.ok().build();
